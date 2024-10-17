@@ -11,9 +11,10 @@ class ApiMusicModel {
 class Data {
   dynamic total,start;
   late Results results;
+
 }
 
 class Results
 {
-  
+  String? id,name,type,year;
 }
