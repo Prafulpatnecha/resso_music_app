@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:resso_music_app/controller/music_controller.dart';
 import 'package:resso_music_app/view/home/home_page.dart';
 
 
 void main()
 {
-  runApp(MyApp());
+  MusicController musicController = Get.put(MusicController());
+  musicController.apiMusicModel;
+  runApp(const MyApp());
 }
 
 
