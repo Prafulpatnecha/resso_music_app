@@ -7,8 +7,7 @@ import 'package:resso_music_app/view/home/home_page.dart';
 
 void main()
 {
-  MusicController musicController = Get.put(MusicController());
-  musicController.apiMusicModel;
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -19,12 +18,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  MusicController musicController = Get.put(MusicController());
     return GetMaterialApp(
       title: "Resso - Akhil_sir",
       debugShowCheckedModeBanner: false,
       getPages: [
         GetPage(name: "/", page:() => const HomePage()),
-
       ],
     );
   }
