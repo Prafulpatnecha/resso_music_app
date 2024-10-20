@@ -6,7 +6,7 @@ class ApiMusicModel {
   ApiMusicModel({required this.success, required this.data});
   factory ApiMusicModel.fromJson(Map m1)
   {
-    return ApiMusicModel(success: m1['success'], data: m1['data']);
+    return ApiMusicModel(success: m1['success'], data: Data.fromJson(m1['data']));
   }
 }
 
@@ -22,7 +22,8 @@ class Data {
 }
 
 class Results {
-  String? id, name, type, year, label, language, copyright, hasLyrics;
+  String? id, name, type, year, label, language, copyright;
+  bool hasLyrics;
   late Artists artists;
   late List<Image> image;
   late List<DownloadUrl> downloadUrl;

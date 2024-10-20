@@ -10,12 +10,14 @@ class ApiHelper {
   ApiHelper._();
   static ApiHelper apiHelper = ApiHelper._();
   String musicUrl = "https://saavn.dev/api/search/songs?query=";
-  Future<Object> apiGetMethod(String search)
+  Future<Map> apiGetMethod(String search)
   async {
     Response response = await http.get(Uri.parse(musicUrl+search));
     if(response.statusCode == 200)
       {
-        return ApiMusicModel.fromJson(jsonDecode(response.body));
+        final jsonData = jsonDecode(response.body);
+        // final jsonData = ApiMusicModel.fromJson(json);
+        return jsonData;
       }else{
       return {};
     }
