@@ -20,6 +20,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
   MusicController musicController = Get.put(MusicController());
     return GetMaterialApp(
+      darkTheme: ThemeData(
+        scaffoldBackgroundColor: Colors.black,
+      ),
+      themeMode: ThemeMode.dark,
       title: "Resso - Akhil_sir",
       debugShowCheckedModeBanner: false,
       getPages: [
