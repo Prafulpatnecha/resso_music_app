@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:resso_music_app/controller/music_controller.dart';
 import 'package:resso_music_app/view/home/home_page.dart';
+import 'package:resso_music_app/view/music/song_page.dart';
 
 
 void main()
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       getPages: [
         GetPage(name: "/", page:() => const HomePage()),
+        GetPage(name: "/song", page:() => const SongPage()),
       ],
     );
   }

@@ -216,9 +216,12 @@ class HomePage extends StatelessWidget {
                                                               .length,
                                                               (indexs) {
                                                             return ListTile(
-                                                              onTap: () {
+                                                              onTap: () async {
                                                                 //Todo select Music Index,And All Music List
-
+                                                                musicController.saveList = apiMusicModel;
+                                                                musicController.selectIndex = indexs.obs;
+                                                                await musicController.audioPlayPageToPageOnClick();
+                                                                Get.toNamed("/song");
                                                               },
                                                               leading: Container(
                                                                 height: 40,
