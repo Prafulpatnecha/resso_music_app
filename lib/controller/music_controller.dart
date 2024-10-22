@@ -18,6 +18,7 @@ class MusicController extends GetxController {
     }
   }
 
+
   Future<Rx<ApiMusicModel>?> apiGetMethod(String musicTypes) async {
     final jsonMap = await ApiHelper.apiHelper.apiGetMethod(musicTypes);
     apiMusicModel = ApiMusicModel.fromJson(jsonMap).obs;
