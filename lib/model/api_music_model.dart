@@ -1,6 +1,6 @@
 
 class ApiMusicModel {
-  late bool success;
+  dynamic success;
   late Data data;
 
   ApiMusicModel({required this.success, required this.data});
