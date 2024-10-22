@@ -32,55 +32,62 @@ class HomePage extends StatelessWidget {
                   children: [
                     ...List.generate(
                       playlistCategories.length, (index) {
-                        return FutureBuilder(
-                          future: musicController.apiGetMethod(playlistCategories[index]+" latest"+letterMusicList[random.nextInt(letterMusicList.length)]),
-                          builder: (context, snapshot) {
-                            ApiMusicModel apiMusicModel = snapshot.data!.value;
-                            if (snapshot.hasError) {
-                              return Center(
-                                child: Text(snapshot.error.toString()),
-                              );
-                            }
-                            if (!snapshot.hasData) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                            return (apiMusicModel.data.results.isNotEmpty)?Column(
-                              children: [
-                                Row(
+                        var musicShareSave = musicController.apiAllCategoryAdd[index];
+                        try{
+                          return FutureBuilder(
+                            future: musicShareSave,
+                            builder: (context, snapshot) {
+                              Rx<ApiMusicModel>? apiMusicModel = snapshot.data as Rx<ApiMusicModel>?;
+                              if (snapshot.hasError) {
+                                return Center(
+                                  child: Text(snapshot.error.toString()),
+                                );
+                              }
+                              if (snapshot.hasData) {
+                                return (apiMusicModel!.value.data.results.isNotEmpty)?Column(
                                   children: [
-                                    Text(playlistCategories[index],style: const TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),).paddingSymmetric(vertical: 15,horizontal: 5),
-                                    // IconButton(onPressed: () {
-                                    //
-                                    // }, icon: Icon(Icons.arrow_drop_down)),
+                                    Row(
+                                      children: [
+                                        Text(playlistCategories[index],style: const TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),).paddingSymmetric(vertical: 15,horizontal: 5),
+                                        // IconButton(onPressed: () {
+                                        //
+                                        // }, icon: Icon(Icons.arrow_drop_down)),
+                                      ],
+                                    ),
+                                    SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        children: [
+                                          ...List.generate(apiMusicModel.value.data.results.length, (indexs) {
+                                            return Column(
+                                              children: [
+                                                Container(
+                                                  height: 120,
+                                                  width: 120,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.blue,
+                                                      image: DecorationImage(image: NetworkImage((apiMusicModel.value.data.results[indexs].image[2].url!=null)?apiMusicModel.value.data.results[indexs].image[2].url!:"https://www.vanessa-hopkins.com/wp-content/uploads/2022/11/Untitled-4-01.png"),fit: BoxFit.cover)
+                                                  ),
+                                                ).paddingSymmetric(horizontal: 10),
+                                              ],
+                                            );
+                                          },),
+                                        ],
+                                      ),
+                                    ),
                                   ],
-                                ),
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: [
-                                      ...List.generate(apiMusicModel.data.results.length, (indexs) {
-                                        return Column(
-                                          children: [
-                                            Container(
-                                              height: 120,
-                                              width: 120,
-                                              decoration: BoxDecoration(
-                                              color: Colors.blue,
-                                                  image: DecorationImage(image: NetworkImage((apiMusicModel.data.results[indexs].image[2].url!=null)?apiMusicModel.data.results[indexs].image[2].url!:"https://www.vanessa-hopkins.com/wp-content/uploads/2022/11/Untitled-4-01.png"),fit: BoxFit.cover)
-                                              ),
-                                            ).paddingSymmetric(horizontal: 10),
-                                          ],
-                                        );
-                                      },),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ).paddingAll(5):Container();
-                          },
-                        );
+                                ).paddingAll(5):Container();
+                              }else{
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            },
+                          );
+                        }catch(e){
+                          return Center(child: CircularProgressIndicator(),);
+                        }
+
                       },
                     ),
                   ],
