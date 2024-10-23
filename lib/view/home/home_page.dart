@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:card_loading/card_loading.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,7 +35,12 @@ class HomePage extends StatelessWidget {
                       if (!snapshots.data!
                               .contains(ConnectivityResult.mobile) &&
                           !snapshots.data!.contains(ConnectivityResult.wifi)) {
-                        return const Center(child: CircularProgressIndicator());
+                        return Center(child: CardLoading(
+                          cardLoadingTheme: CardLoadingTheme(colorOne: white, colorTwo: black),
+                          height: 80,
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          margin: EdgeInsets.only(bottom: 10),
+                        ),).paddingSymmetric(horizontal: 25);
                       }
                       if (snapshots.hasError) {
                         return const Center(child: CircularProgressIndicator());
@@ -65,6 +71,9 @@ class HomePage extends StatelessWidget {
                                   AppBar(
                                     centerTitle: true,
                                     actions:  [
+                                      IconButton(onPressed: () {
+                                        Get.toNamed("/search");
+                                      }, icon: Icon(Icons.search,color: Colors.white,)),
                                         Container(
                                           height: 30,
                                           width: 30,
@@ -177,27 +186,46 @@ class HomePage extends StatelessWidget {
                                                               .results
                                                               .length,
                                                           (indexs) {
-                                                            return Column(
-                                                              children: [
-                                                                Container(
-                                                                  height: 120,
-                                                                  width: 120,
-                                                                  decoration: BoxDecoration(
-                                                                    borderRadius: BorderRadius.circular(20),
-                                                                      color: Colors
-                                                                          .blue,
-                                                                      image: DecorationImage(
-                                                                          image: NetworkImage((apiMusicModel.value.data.results[indexs].image[2].url != null)
-                                                                              ? apiMusicModel.value.data.results[indexs].image[2].url!
-                                                                              : "https://www.vanessa-hopkins.com/wp-content/uploads/2022/11/Untitled-4-01.png"),
-                                                                          fit: BoxFit.cover)),
-                                                                ).paddingSymmetric(
-                                                                    horizontal:
-                                                                        10),
-                                                                Container(
-                                                                    width: 115,
-                                                                    child: Text(apiMusicModel.value.data.results[indexs].name!,textAlign: TextAlign.center,style: TextStyle(color: Colors.white.withOpacity(0.6)),overflow: TextOverflow.ellipsis,)).paddingSymmetric(vertical: 5)
-                                                              ],
+                                                            return GestureDetector(
+                                                              onTap: () async {
+                                                                //Todo select Music Index,And All Music List
+                                                                try{
+                                                                  if(musicController.saveList.value.success==null || musicController.saveList.value.data.results[musicController.selectIndex.value].downloadUrl[musicController.saveList.value.data.results[indexs].downloadUrl.length-1].url!=apiMusicModel.value.data.results[indexs].downloadUrl[apiMusicModel.value.data.results[indexs].downloadUrl.length-1].url)
+                                                                  {
+                                                                    musicController.saveList = apiMusicModel;
+                                                                    musicController.selectIndex = indexs.obs;
+                                                                    await musicController.audioPlayPageToPageOnClick();
+                                                                  }
+                                                                }catch(e)
+                                                                {
+                                                                  musicController.saveList = apiMusicModel;
+                                                                  musicController.selectIndex = indexs.obs;
+                                                                  await musicController.audioPlayPageToPageOnClick();
+                                                                }
+                                                                Get.toNamed("/song");
+                                                              },
+                                                              child: Column(
+                                                                children: [
+                                                                  Container(
+                                                                    height: 120,
+                                                                    width: 120,
+                                                                    decoration: BoxDecoration(
+                                                                      borderRadius: BorderRadius.circular(20),
+                                                                        // color: Colors
+                                                                        //     .blue,
+                                                                        image: DecorationImage(
+                                                                            image: NetworkImage((apiMusicModel.value.data.results[indexs].image[2].url != null)
+                                                                                ? apiMusicModel.value.data.results[indexs].image[2].url!
+                                                                                : "https://www.vanessa-hopkins.com/wp-content/uploads/2022/11/Untitled-4-01.png"),
+                                                                            fit: BoxFit.cover)),
+                                                                  ).paddingSymmetric(
+                                                                      horizontal:
+                                                                          10),
+                                                                  Container(
+                                                                      width: 115,
+                                                                      child: Text(apiMusicModel.value.data.results[indexs].name!,textAlign: TextAlign.center,style: TextStyle(color: Colors.white.withOpacity(0.6)),overflow: TextOverflow.ellipsis,)).paddingSymmetric(vertical: 5)
+                                                                ],
+                                                              ),
                                                             );
                                                           },
                                                         ),
@@ -253,15 +281,25 @@ class HomePage extends StatelessWidget {
                                               ).paddingAll(5)
                                             : Container();
                                       } else {
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
+                                        return Center(
+                                          child: CardLoading(
+                                            cardLoadingTheme: CardLoadingTheme(colorOne: white, colorTwo: black),
+                                            height: 80,
+                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            margin: EdgeInsets.only(bottom: 10),
+                                          ).paddingSymmetric(horizontal: 25),
                                         );
                                       }
                                     },
                                   );
                                 } catch (e) {
                                   return Center(
-                                    child: CircularProgressIndicator(),
+                                    child: CardLoading(
+                                      cardLoadingTheme: CardLoadingTheme(colorOne: white, colorTwo: black),
+                                      height: 80,
+                                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                                      margin: EdgeInsets.only(bottom: 10),
+                                    ).paddingSymmetric(horizontal: 25),
                                   );
                                 }
                               },
@@ -280,7 +318,12 @@ class HomePage extends StatelessWidget {
                         ),
                       );
                     } catch (e) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(child: CardLoading(
+                        cardLoadingTheme: CardLoadingTheme(colorOne: white, colorTwo: black),
+                        height: 80,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        margin: EdgeInsets.only(bottom: 10),
+                      ),).paddingSymmetric(horizontal: 25);
                     }
                   }),
             ),
@@ -290,3 +333,5 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+Color black = Colors.black;
+Color white = Colors.blue.withOpacity(0.1);

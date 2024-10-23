@@ -26,6 +26,17 @@ class MusicController extends GetxController {
     apiMusicModel = ApiMusicModel.fromJson(jsonMap).obs;
     return apiMusicModel;
   }
+  RxList searchApiModal = [].obs;
+  void apiSearchingNewSong(String value)
+  {
+    searchApiModal.clear();
+    searchApiModal.add(apiGetMethod(value));
+  }
+
+  // Rx<ApiMusicModel>? streamApi()
+  // {
+  //   return searchApiModal;
+  // }
 
   //Music All Work
   AudioPlayer player = AudioPlayer();
@@ -40,7 +51,7 @@ class MusicController extends GetxController {
             saveList.value.data.results[selectIndex.value].downloadUrl.length -
                 1]
         .url!);
-    print(saveList.value.data.results[selectIndex.value].downloadUrl.length);
+    // print(saveList.value.data.results[selectIndex.value].downloadUrl.length);
     player.play();
   }
 
@@ -51,4 +62,20 @@ class MusicController extends GetxController {
       player.pause();
     }
   }
+  Stream<Duration> sliderPlaySeek()
+   {
+    return player.positionStream;
+  }
+
+  Future<void> musicSetSeek(Duration value)
+  async {
+    return await player.seek(value);
+  }
+  Future<void> reStart()
+  async {
+    selectIndex.value;
+    return await audioPlayPageToPageOnClick();
+  }
+  // RxInt min = 0.obs;
+  // RxInt values =0.obs;
 }

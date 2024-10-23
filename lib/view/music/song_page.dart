@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:card_loading/card_loading.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,6 +8,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:resso_music_app/controller/music_controller.dart';
 
 import '../../contain/play_and_pause.dart';
+import '../home/home_page.dart';
 
 class SongPage extends StatelessWidget {
   const SongPage({super.key});
@@ -21,11 +25,14 @@ class SongPage extends StatelessWidget {
             options: CarouselOptions(
               initialPage: musicController.selectIndex.value,
               onPageChanged: (index, reason) async {
-                if(index!=musicController.selectIndex.value)
-                  {
+                try {
+                  if (index != musicController.selectIndex.value) {
                     musicController.selectIndex.value = index;
                     await musicController.audioPlayPageToPageOnClick();
                   }
+                } catch (e) {
+                  print("Error");
+                }
               },
               height: h,
               viewportFraction: 2.0,
@@ -52,9 +59,16 @@ class SongPage extends StatelessWidget {
                 ),
                 child: SingleChildScrollView(
                   child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AppBar(
+                        leading: IconButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            icon: Icon(
+                              Icons.navigate_before,
+                              color: Colors.white,
+                            )),
                         backgroundColor: Colors.transparent,
                         centerTitle: true,
                         title: Text(
@@ -73,7 +87,7 @@ class SongPage extends StatelessWidget {
                         width: w * 0.7,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: Colors.blue,
+                          // color: Colors.blue,
                           image: DecorationImage(
                             image: NetworkImage(
                               musicController
@@ -84,12 +98,13 @@ class SongPage extends StatelessWidget {
                                   .image[2]
                                   .url!,
                             ),
+                            opacity: 0.5,
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
                       const SizedBox(
-                        height: 60,
+                        height: 150,
                       ),
                       const PlayAndPause(),
                       // Row(
@@ -133,7 +148,137 @@ class SongPage extends StatelessWidget {
                       //           size: 40,
                       //         )),
                       //   ],
-                      // )
+                      // ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        height: 50,
+                        width: w,
+                        child: StreamBuilder(
+                            stream: musicController.sliderPlaySeek(),
+                            builder: (context, snapshot) {
+                              try {
+                                var data = snapshot.data!;
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                      child: CardLoading(
+                                        cardLoadingTheme: CardLoadingTheme(colorOne: white, colorTwo: black),
+                                        height: 20,
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        margin: EdgeInsets.only(bottom: 10),
+                                      ).paddingSymmetric(horizontal: 20));
+                                } else if (snapshot.hasError) {
+                                  return Center(
+                                    child: CardLoading(
+                                      cardLoadingTheme: CardLoadingTheme(colorOne: white, colorTwo: black),
+                                      height: 20,
+                                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                                      margin: EdgeInsets.only(bottom: 10),
+                                    ).paddingSymmetric(horizontal: 20),
+                                  );
+                                } else {
+                                  return Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Text(
+                                        musicController
+                                                .player.duration!.inSeconds
+                                                .toString() ??
+                                            "0",
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Slider(
+                                        overlayColor: WidgetStatePropertyAll(
+                                            Colors.blue.withOpacity(0.2)),
+                                        thumbColor: Colors.red.withOpacity(0.2),
+                                        activeColor:
+                                            Colors.red.withOpacity(0.2),
+                                        inactiveColor:
+                                            Colors.blue.withOpacity(0.2),
+                                        // secondaryActiveColor: Colors.blue.withOpacity(0.2),
+                                        max: musicController.duration.inSeconds
+                                                .toDouble() ??
+                                            0,
+                                        // min: 0,
+                                        value: data.inSeconds.toDouble(),
+                                        onChanged: (value) async {
+                                          musicController.musicSetSeek(
+                                              Duration(seconds: value.toInt()));
+                                        },
+                                      ),
+                                      Text(
+                                        data.inSeconds.toString() ?? "0",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ],
+                                  );
+                                }
+                              } catch (e) {
+                                // musicController.reStart();
+                                return CardLoading(
+                                  cardLoadingTheme: CardLoadingTheme(colorOne: white, colorTwo: black),
+                                  height: 20,
+                                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                                  margin: EdgeInsets.only(bottom: 10),
+                                ).paddingSymmetric(horizontal: 20);
+                              }
+                            }),
+                      ),
+                      // Container(
+                      //   height: 50,
+                      //   width: w,
+                      //   child: StreamBuilder(
+                      //       stream: musicController.sliderPlaySeek(),
+                      //       builder: (context, snapshot) {
+                      //         try {
+                      //           var data = snapshot.data!;
+                      //           if (!snapshot.hasData) {
+                      //             return const Center(
+                      //                 child: CircularProgressIndicator());
+                      //           } else if (snapshot.hasError) {
+                      //             return Center(
+                      //               child: CircularProgressIndicator(),
+                      //             );
+                      //           } else {
+                      //             return Row(
+                      //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //               children: [
+                      //                 Text(data.inSeconds.toString(),style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500),),
+                      //                 Text(musicController.player.duration!.inSeconds.toString(),style: const TextStyle(color: Colors.white,fontWeight: FontWeight.w500),),
+                      //               ],
+                      //             ).paddingSymmetric(horizontal: 30);
+                      //
+                      //             //   Slider(
+                      //             //   overlayColor: WidgetStatePropertyAll(
+                      //             //       Colors.blue.withOpacity(0.2)),
+                      //             //   thumbColor: Colors.red.withOpacity(0.2),
+                      //             //   activeColor: Colors.red.withOpacity(0.2),
+                      //             //   inactiveColor: Colors.blue.withOpacity(0.2),
+                      //             //   // secondaryActiveColor: Colors.blue.withOpacity(0.2),
+                      //             //   max: musicController.duration.inSeconds
+                      //             //       .toDouble() ??
+                      //             //       0,
+                      //             //   // min: 0,
+                      //             //   value: data.inSeconds.toDouble(),
+                      //             //   onChanged: (value) async {
+                      //             //     musicController.musicSetSeek(
+                      //             //         Duration(seconds: value.toInt()));
+                      //             //   },
+                      //             // );
+                      //           }
+                      //         } catch (e) {
+                      //           print("error");
+                      //         }
+                      //         musicController.reStart();
+                      //         return CircularProgressIndicator();
+                      //       }),
+                      // ),
                     ],
                   ),
                 ),

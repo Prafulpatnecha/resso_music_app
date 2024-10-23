@@ -53,7 +53,7 @@ class _PlayAndPauseState extends State<PlayAndPause>
         progress: controller,
         size: 60.0,
         color: Colors.grey,
-        semanticLabel: 'Show menu',
+        semanticLabel: "Play Pause",
       ),
     );
   }
