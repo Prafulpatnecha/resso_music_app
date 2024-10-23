@@ -218,9 +218,19 @@ class HomePage extends StatelessWidget {
                                                             return ListTile(
                                                               onTap: () async {
                                                                 //Todo select Music Index,And All Music List
-                                                                musicController.saveList = apiMusicModel;
-                                                                musicController.selectIndex = indexs.obs;
-                                                                await musicController.audioPlayPageToPageOnClick();
+                                                                try{
+                                                                if(musicController.saveList.value.success==null || musicController.saveList.value.data.results[musicController.selectIndex.value].downloadUrl[musicController.saveList.value.data.results[indexs].downloadUrl.length-1].url!=apiMusicModel.value.data.results[indexs].downloadUrl[apiMusicModel.value.data.results[indexs].downloadUrl.length-1].url)
+                                                                  {
+                                                                    musicController.saveList = apiMusicModel;
+                                                                    musicController.selectIndex = indexs.obs;
+                                                                    await musicController.audioPlayPageToPageOnClick();
+                                                                  }
+                                                                }catch(e)
+                                                                {
+                                                                  musicController.saveList = apiMusicModel;
+                                                                  musicController.selectIndex = indexs.obs;
+                                                                  await musicController.audioPlayPageToPageOnClick();
+                                                                }
                                                                 Get.toNamed("/song");
                                                               },
                                                               leading: Container(

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/animation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:get/get.dart';
 import 'package:resso_music_app/controller/api_helper.dart';
@@ -11,10 +12,12 @@ class MusicController extends GetxController {
   RxInt selectIndex = 0.obs;
   var controllerAppBar;
   RxList apiAllCategoryAdd = [].obs;
+
   MusicController() {
-    Random random =Random();
+    Random random = Random();
     for (int i = 0; i < playlistCategories.length; i++) {
-      apiAllCategoryAdd.add(apiGetMethod(playlistCategories[i]+letterMusicList[random.nextInt(letterMusicList.length)]));
+      apiAllCategoryAdd.add(apiGetMethod(playlistCategories[i] +
+          letterMusicList[random.nextInt(letterMusicList.length)]));
     }
   }
 
@@ -25,11 +28,27 @@ class MusicController extends GetxController {
   }
 
   //Music All Work
-  AudioPlayer player =AudioPlayer();
+  AudioPlayer player = AudioPlayer();
   var duration;
-  Future<void> audioPlayPageToPageOnClick()
-  async {
-    duration = await player.setUrl(saveList.value.data.results[selectIndex.value].downloadUrl[saveList.value.data.results[selectIndex.value].downloadUrl.length-1].url!);
+
+  Future<void> audioPlayPageToPageOnClick() async {
+    duration = await player.setUrl(saveList
+        .value
+        .data
+        .results[selectIndex.value]
+        .downloadUrl[
+            saveList.value.data.results[selectIndex.value].downloadUrl.length -
+                1]
+        .url!);
+    print(saveList.value.data.results[selectIndex.value].downloadUrl.length);
     player.play();
+  }
+
+  void audioPlayAndPause(bool isPlay) {
+    if (isPlay) {
+      player.play();
+    } else {
+      player.pause();
+    }
   }
 }
