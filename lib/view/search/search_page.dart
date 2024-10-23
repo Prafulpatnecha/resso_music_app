@@ -22,9 +22,11 @@ class SearchPage extends StatelessWidget {
               height: 50,
             ),
             TextField(
+              textInputAction: TextInputAction.search,
               onSubmitted: (value) async {
                 musicController.apiSearchingNewSong(value);
               },
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderSide:
